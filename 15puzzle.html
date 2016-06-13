@@ -28,6 +28,8 @@
         [-1, 0],
         [1, 0]
       ];
+      var moveCount = 2;
+
 
       function initTiles() {
         var row, col;
@@ -76,6 +78,35 @@
           }
         }
       }
+
+      function moveBlank(count) {
+        var blankRow, blankCol;
+        var targetPosition;
+        var targetRow, targetCol;
+
+        blankRow  = ROW_COUNT - 1;
+        blankCol  = COL_COUNT - 1;
+
+        while (true) {
+          targetPosition = Math.floor(Math.random() * UDLR.length);
+          targetRow = blankRow + UDLR[targetPosition][1];
+          targetCol = blankCol + UDLR[targetPosition][0];
+          if (targetRow < 0 || targetRow >= ROW_COUNT) {
+            continue;
+          }
+          if (targetCol < 0 || targetCol >= COL_COUNT) {
+            continue;
+          }
+          tiles[blankRow][blankCol] = tiles[targetRow][targetCol];
+          tiles[targetRow][targetCol] = -1;
+          blankRow = targetRow;
+          blankCol = targetCol;
+          if (!--count) {
+            break;
+          }
+        }
+      }
+
       if (!canvas.getContext) {
         alert('Canvas not supported...orz');
         return;
@@ -86,6 +117,7 @@
       image.src = IMAGE_URL;
       image.addEventListener('load', function () {
         initTiles();
+        moveBlank(moveCount);
         drawPuzzle();
       });
       canvas.addEventListener('click', function (e)  {
